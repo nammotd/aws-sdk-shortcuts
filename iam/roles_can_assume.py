@@ -24,13 +24,13 @@ def get_statements(roles, value_to_find):
 
 if __name__ == "__main__":
     iam = boto3.client('iam')
-    call = iam.list_roles()
-    roles = call['Roles']
-    while call['IsTruncated'] and call['Marker']:
-        token = call['Marker']
-        call = iam.list_roles(
-                Marker = token
-                )
-        roles += call['Roles']
+    paginator = iam.get_paginator('list_roles')
+    response_iterator = paginator.paginate()
+
+    roles = []
+    for response in response_iterator:
+        for role in response['Roles']:
+            roles.append(role)
+
     while True:
         pp.pprint(get_statements(roles, input("\nPlease input the role you want to find: ")))
