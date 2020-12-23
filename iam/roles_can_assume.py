@@ -21,7 +21,6 @@ def get_statements(roles, value_to_find):
                     final.append(dict(Arn=first, RoleName=key))
 
     return final
-
 if __name__ == "__main__":
     iam = boto3.client('iam')
     call = iam.list_roles()
