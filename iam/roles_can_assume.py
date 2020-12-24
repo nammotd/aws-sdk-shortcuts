@@ -1,35 +1,42 @@
-import boto3, re, sys
-import pprint
-pp = pprint.PrettyPrinter(indent=4)
+import re, click, json, datetime
+from base import Iam
 
-def get_statements(roles, value_to_find):
-    temp = []
-    for order, role in enumerate(roles):
+def convert_time_to_string(value):
+    if isinstance(value, datetime.datetime):
+        return value.__str__()
+
+@click.command()
+@click.option('--name', help="a part of a Role's name")
+def by_role_statements(name):
+    iam = Iam("ap-southeast-1", "default")
+    origin = []
+    return_items = ["Arn", "RoleName", "Description"]
+    for role in iam.roles:
         for state in role['AssumeRolePolicyDocument']['Statement']:
-            if  'Principal' in state and 'AWS' in state['Principal']:
-                temp.append(
-                    (roles[order]['Arn'], roles[order]['RoleName'], state['Principal']['AWS'])
+            for item in state['Principal'].values():
+                if isinstance(item, str):
+                    if re.search(name, item):
+                        origin.append(role)
+                elif isinstance(item, list):
+                    for elem in item:
+                        if re.search(name, elem):
+                            origin.append(role)
+    if return_items:
+        final = []
+        for unit in origin:
+            _dict = {}
+            for key,value in unit.items():
+                if key in return_items:
+                    _dict[key] = value
+            if _dict:
+                final.append(_dict)
+        click.echo(
+                json.dumps(final, sort_keys=True, indent=2, default = convert_time_to_string)
                 )
-    final = []
-    for first,key,value in temp:
-        if isinstance(value, str):
-            if re.search(value_to_find, value):
-                final.append(dict(Arn=first, RoleName=key))
-        elif isinstance(value, list):
-            for item in value:
-                if re.search(value_to_find, item):
-                    final.append(dict(Arn=first, RoleName=key))
+    else:
+        click.echo(
+                json.dumps(origin, sort_keys=True, indent=2, default=convert_time_to_string)
+                )
 
-    return final
 if __name__ == "__main__":
-    iam = boto3.client('iam')
-    paginator = iam.get_paginator('list_roles')
-    response_iterator = paginator.paginate()
-
-    roles = []
-    for response in response_iterator:
-        for role in response['Roles']:
-            roles.append(role)
-
-    while True:
-        pp.pprint(get_statements(roles, input("\nPlease input the role you want to find: ")))
+    by_role_statements()

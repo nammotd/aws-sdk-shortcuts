@@ -1,38 +1,37 @@
-import boto3, re, sys, itertools
-import pprint
-pp = pprint.PrettyPrinter(indent=4)
+import boto3, re, click, json
+from base import Iam
 
-def get_rolename(roles, value_to_find):
-    temp = []
-    return_items = ["Arn", "RoleName"]
+def convert_time_to_string(value):
+    if isinstance(value, datetime.datetime):
+        return value.__str__()
 
-    for role in roles:
-        if re.search(value_to_find, role['RoleName']):
-            temp.append(role)
+@click.command()
+@click.option('--name', help="a part of a Role's name")
+def by_role_name(name):
+    iam = Iam("ap-southeast-1", "default")
+    origin = []
+    return_items = ["Arn", "RoleName", "Description"]
+    for role in iam.roles:
+        if re.search(name, role['RoleName']):
+            origin.append(role)
 
     if return_items:
         final = []
-        for role in temp:
+        for unit in origin:
             _dict = {}
-            for key,value in role.items():
+            for key,value in unit.items():
                 if key in return_items:
                     _dict[key] = value
             if _dict:
                 final.append(_dict)
-
-        return final
-
-    return temp
+        click.echo(
+                json.dumps(final, sort_keys=True, indent=2, default = convert_time_to_string)
+                )
+    else:
+        click.echo(
+                json.dumps(origin, sort_keys=True, indent=2, default=convert_time_to_string)
+                )
 
 if __name__ == "__main__":
-    iam = boto3.client('iam')
-    paginator = iam.get_paginator('list_roles')
-    response_iterator = paginator.paginate()
+    by_role_name()
 
-    roles = []
-    for response in response_iterator:
-        for role in response['Roles']:
-            roles.append(role)
-
-    while True:
-        pp.pprint(get_rolename(roles, input("\nPlease input the role you want to find: ")))
