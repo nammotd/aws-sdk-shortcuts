@@ -6,11 +6,11 @@ def convert_time_to_string(value):
         return value.__str__()
 
 @click.command()
-@click.option("--name", help="Name of the Cognito User Pool to get all users")
+@click.option("--name", help="name of the required Cognito")
 def by_cognito_name(name):
     cognito = Cognito("ap-soutehast-1", "default")
-    return_items = ["Username", "Enabled", "UserLastModifiedDate", "UserStatus"]
-    origin = cognito.list_users(name)
+    return_items = []
+    origin = cognito.list_user_pool_clients(name)
     final = []
     if return_items:
         final = []
