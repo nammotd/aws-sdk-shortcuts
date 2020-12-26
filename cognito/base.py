@@ -26,7 +26,7 @@ class Cognito(object):
     def list_users(self, user_pool_name):
         users = []
         call = self.client.list_users(
-                UserPoolId = user_pool_id,
+                UserPoolId = self.get_user_pool_id(user_pool_name),
                 Limit = 50
             )
         users = call['Users']

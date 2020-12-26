@@ -1,6 +1,7 @@
 import boto3, re, click, json, datetime
 from base import Cognito
 
+cognito = Cognito("ap-soutehast-1", "default")
 def convert_time_to_string(value):
     if isinstance(value, datetime.datetime):
         return value.__str__()
@@ -9,7 +10,9 @@ def convert_time_to_string(value):
 @click.option("--name", help="name of the required Cognito")
 @click.option('--filter-keys', help="A list of key to extract only, seperate by a comma")
 def by_cognito_name(name, filter_keys):
-    cognito = Cognito("ap-soutehast-1", "default")
+    """
+        This command extracts all AppClient within a Cognito
+    """
     return_items = []
     origin = cognito.list_user_pool_clients(name)
     if filter_keys:

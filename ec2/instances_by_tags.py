@@ -10,6 +10,9 @@ def convert_time_to_string(value):
 @click.option("--value", help="Value of the Tags to filter")
 @click.option('--filter-keys', help="A list of key to extract only, seperate by a comma")
 def by_tag(key, value, filter_keys):
+    """
+        This command lists all Ec2 instances possing at least one Tag Name/Value matched your input
+    """
     ec2 = Ec2("ap-southeast-1", "default")
     origin = []
     return_items = ["PrivateIpAddress", "PublicIpAddress", "KeyName"]

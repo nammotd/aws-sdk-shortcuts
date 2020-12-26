@@ -9,6 +9,9 @@ def convert_time_to_string(value):
 @click.option('--name', help="a part of a Role's name")
 @click.option('--filter-keys', help="A list of key to extract only, seperate by a comma")
 def by_role_statements(name, filter_keys):
+    """
+        This command lists all IAM Roles whose assume-principals matched your input
+    """
     iam = Iam("ap-southeast-1", "default")
     origin = []
     for role in iam.roles:

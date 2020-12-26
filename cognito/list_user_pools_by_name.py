@@ -9,6 +9,9 @@ def convert_time_to_string(value):
 @click.option("--name", help="Part of a Cognito's name")
 @click.option('--filter-keys', help="A list of key to extract only, seperate by a comma")
 def by_cognito_name(name, filter_keys):
+    """
+        This command lists all Cognito matched an string
+    """
     cognito = Cognito("ap-soutehast-1", "default")
     user_pools = cognito.user_pools
     origin = []

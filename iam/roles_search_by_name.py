@@ -9,6 +9,9 @@ def convert_time_to_string(value):
 @click.option('--name', help="a part of a Role's name")
 @click.option('--filter-keys', help="a part of a Role's name")
 def by_role_name(name, filter_keys):
+    """
+        This command lists all IAM Roles whose name matched your input
+    """
     iam = Iam("ap-southeast-1", "default")
     origin = []
     return_items = ["Arn", "RoleName", "Description"]
