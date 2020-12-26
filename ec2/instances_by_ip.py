@@ -9,6 +9,9 @@ def convert_time_to_string(value):
 @click.option("--ip", help="A desired ip to search for")
 @click.option('--filter-keys', help="A list of key to extract only, seperate by a comma")
 def by_ip(ip, filter_keys):
+    """
+        This command lists all Ec2 instances which possess an Ip matched your input Ip
+    """
     ec2 = Ec2("ap-southeast-1", "default")
     origin = []
     for instance in ec2.instances:
