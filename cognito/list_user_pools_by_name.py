@@ -6,14 +6,19 @@ def convert_time_to_string(value):
         return value.__str__()
 
 @click.command()
-@click.option("--name")
-def by_cognito_name(name):
+@click.option("--name", help="Part of a Cognito's name")
+@click.option('--filter-keys', help="A list of key to extract only, seperate by a comma")
+def by_cognito_name(name, filter_keys):
     cognito = Cognito("ap-soutehast-1", "default")
-    return_items = ["Username", "Enabled", "UserLastModifiedDate", "UserStatus"]
-    origin = cognito.list_users(name)
-    final = []
-    if return_items:
+    user_pools = cognito.user_pools
+    origin = []
+    for user_pool in user_pools:
+        if re.search(name, user_pool['Name']):
+            origin.append(user_pool)
+
+    if filter_keys:
         final = []
+        return_items = filter_keys.split(",")
         for unit in origin:
             _dict = {}
             for key,value in unit.items():
@@ -29,4 +34,3 @@ def by_cognito_name(name):
 
 if __name__ == "__main__":
     by_cognito_name()
-
