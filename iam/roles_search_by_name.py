@@ -7,7 +7,8 @@ def convert_time_to_string(value):
 
 @click.command()
 @click.option('--name', help="a part of a Role's name")
-def by_role_name(name):
+@click.option('--filter-keys', help="a part of a Role's name")
+def by_role_name(name, filter_keys):
     iam = Iam("ap-southeast-1", "default")
     origin = []
     return_items = ["Arn", "RoleName", "Description"]
@@ -15,7 +16,8 @@ def by_role_name(name):
         if re.search(name, role['RoleName']):
             origin.append(role)
 
-    if return_items:
+    if filter_keys:
+        return_items = filter_keys.split(",")
         final = []
         for unit in origin:
             _dict = {}
@@ -34,4 +36,3 @@ def by_role_name(name):
 
 if __name__ == "__main__":
     by_role_name()
-

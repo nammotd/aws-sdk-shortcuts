@@ -7,13 +7,14 @@ def convert_time_to_string(value):
 
 @click.command()
 @click.option("--name", help="name of the required Cognito")
-def by_cognito_name(name):
+@click.option('--filter-keys', help="A list of key to extract only, seperate by a comma")
+def by_cognito_name(name, filter_keys):
     cognito = Cognito("ap-soutehast-1", "default")
     return_items = []
     origin = cognito.list_user_pool_clients(name)
-    final = []
-    if return_items:
+    if filter_keys:
         final = []
+        return_items = filter_keys.split(",")
         for unit in origin:
             _dict = {}
             for key,value in unit.items():

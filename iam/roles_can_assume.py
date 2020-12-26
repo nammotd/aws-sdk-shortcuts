@@ -7,10 +7,10 @@ def convert_time_to_string(value):
 
 @click.command()
 @click.option('--name', help="a part of a Role's name")
-def by_role_statements(name):
+@click.option('--filter-keys', help="A list of key to extract only, seperate by a comma")
+def by_role_statements(name, filter_keys):
     iam = Iam("ap-southeast-1", "default")
     origin = []
-    return_items = ["Arn", "RoleName", "Description"]
     for role in iam.roles:
         for state in role['AssumeRolePolicyDocument']['Statement']:
             for item in state['Principal'].values():
@@ -21,7 +21,8 @@ def by_role_statements(name):
                     for elem in item:
                         if re.search(name, elem):
                             origin.append(role)
-    if return_items:
+    if filter_keys:
+        return_items = filter_keys.split(",")
         final = []
         for unit in origin:
             _dict = {}

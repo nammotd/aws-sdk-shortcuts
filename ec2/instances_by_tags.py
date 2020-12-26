@@ -1,4 +1,4 @@
-import boto3, re, click, json
+import boto3, re, click, json, datetime
 from base import Ec2
 
 def convert_time_to_string(value):
@@ -8,7 +8,8 @@ def convert_time_to_string(value):
 @click.command()
 @click.option("--key", default="Name", help="Key of the Tags to filter")
 @click.option("--value", help="Value of the Tags to filter")
-def by_tag(key, value):
+@click.option('--filter-keys', help="A list of key to extract only, seperate by a comma")
+def by_tag(key, value, filter_keys):
     ec2 = Ec2("ap-southeast-1", "default")
     origin = []
     return_items = ["PrivateIpAddress", "PublicIpAddress", "KeyName"]
@@ -17,8 +18,9 @@ def by_tag(key, value):
             if tag['Key'] == key and re.search(value, tag['Value']):
                 origin.append(instance)
 
-    if return_items:
+    if filter_keys:
         final = []
+        return_items = filter_keys.split(',')
         for unit in origin:
             _dict = {}
             for key,value in unit.items():
@@ -26,7 +28,8 @@ def by_tag(key, value):
                     _dict[key] = value
             if _dict:
                 final.append(_dict)
-        final = json.dumps(final, sort_keys=True, indent=2, default = convert_time_to_string)
+        final = json.dumps(final, sort_keys=True, indent=2, default = convert_time_to_string,
+                )
         click.echo(final)
     else:
         origin = json.dumps(origin, sort_keys=True, indent=2, default = convert_time_to_string)
