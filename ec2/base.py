@@ -16,6 +16,19 @@ class Ec2(object):
                     instances.append(instance)
         return instances
 
+    def describe_security_groups(self):
+        paginator = self.client.get_paginator('describe_security_groups')
+        response_iterator = paginator.paginate()
+        secs = []
+        for response in response_iterator:
+            for sec in response['SecurityGroups']:
+                secs.append(sec)
+        return secs
+
     @property
     def instances(self):
         return self.describe_instances()
+
+    @property
+    def security_groups(self):
+        return self.describe_security_groups()
