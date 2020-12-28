@@ -13,7 +13,6 @@ def by_cognito_name(name, filter_keys):
     """
         This command extracts all Users within a Cognito
     """
-    return_items = ["Username", "Enabled", "UserLastModifiedDate", "UserStatus"]
     origin = cognito.list_users(name)
     if filter_keys:
         final = []

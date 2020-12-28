@@ -14,7 +14,6 @@ def by_role_name(name, filter_keys):
     """
     iam = Iam("ap-southeast-1", "default")
     origin = []
-    return_items = ["Arn", "RoleName", "Description"]
     for role in iam.roles:
         if re.search(name, role['RoleName']):
             origin.append(role)
