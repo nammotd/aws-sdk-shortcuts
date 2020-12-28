@@ -15,9 +15,9 @@ def by_ip(ip, filter_keys):
     ec2 = Ec2("ap-southeast-1", "default")
     origin = []
     for instance in ec2.instances:
-        if re.search(ip, instance.get('PublicIpAddress', "")):
+        if (instance_ip := instance.get("PublicIpAddress")) is not None and re.search(ip, instance_ip):
             origin.append(instance)
-        elif re.search(ip, instance.get('PrivateIpAddress', "")):
+        elif (instance_ip := instance.get("PrivateIpAddress")) is not None and re.search(ip, instance_ip):
             origin.append(instance)
 
     if filter_keys:

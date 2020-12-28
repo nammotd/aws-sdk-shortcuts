@@ -8,7 +8,6 @@ class Cognito(object):
         self._user_pools = self.list_user_pools()
 
     def list_user_pools(self):
-        result = []
         call = self.client.list_user_pools(MaxResults=50)
         result = call['UserPools']
         while "NextToken" in call and call['NextToken']:
@@ -24,7 +23,6 @@ class Cognito(object):
                 return user_pool_id
 
     def list_users(self, user_pool_name):
-        users = []
         call = self.client.list_users(
                 UserPoolId = self.get_user_pool_id(user_pool_name),
                 Limit = 50
@@ -41,7 +39,6 @@ class Cognito(object):
         return users
 
     def list_user_pool_clients(self, user_pool_name):
-        clients = []
         call = self.client.list_user_pool_clients(
             UserPoolId = self.get_user_pool_id(user_pool_name),
             MaxResults = 50,

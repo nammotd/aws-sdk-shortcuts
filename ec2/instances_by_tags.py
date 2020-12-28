@@ -15,7 +15,6 @@ def by_tag(key, value, filter_keys):
     """
     ec2 = Ec2("ap-southeast-1", "default")
     origin = []
-    return_items = ["PrivateIpAddress", "PublicIpAddress", "KeyName"]
     for instance in ec2.instances:
         for tag in instance.get('Tags', {}):
             if tag['Key'] == key and re.search(value, tag['Value']):
