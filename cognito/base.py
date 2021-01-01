@@ -53,6 +53,16 @@ class Cognito(object):
             clients += call['UserPoolClients']
         return clients
 
+    def describe_user_pool(self, user_pool):
+        detail_to_add = ["Domain", "UserPoolTags", "EstimatedNumberOfUsers"]
+        call = self.client.describe_user_pool(
+                    UserPoolId = user_pool['Id']
+                )['UserPool']
+        for key in detail_to_add:
+            user_pool[key] = call[key]
+
+        return user_pool
+
     @property
     def user_pools(self):
         return self._user_pools
