@@ -13,11 +13,10 @@ def by_cognito_name(name, filter_keys):
         This command lists all Cognito matched an string
     """
     cognito = Cognito("ap-soutehast-1", "default")
-    user_pools = cognito.user_pools
     origin = []
-    for user_pool in user_pools:
+    for user_pool in cognito.user_pools:
         if re.search(name, user_pool['Name']):
-            origin.append(user_pool)
+            origin.append(cognito.describe_user_pool(user_pool))
 
     if filter_keys:
         final = []
