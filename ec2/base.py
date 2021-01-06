@@ -25,6 +25,15 @@ class Ec2(object):
                 secs.append(sec)
         return secs
 
+    def describe_volumes(self):
+        paginator = self.client.get_paginator('describe_volumes')
+        response_iterator = paginator.paginate()
+        volumes = []
+        for response in response_iterator:
+            for volume in response['Volumes']:
+                volumes.append(volume)
+        return volumes
+
     @property
     def instances(self):
         return self.describe_instances()
@@ -32,3 +41,7 @@ class Ec2(object):
     @property
     def security_groups(self):
         return self.describe_security_groups()
+
+    @property
+    def volumes(self):
+        return self.describe_volumes()
